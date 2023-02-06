@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tugas 1</title>
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+    <div class="kolom-input">
+        <form class="form-input">
+            <input class="input" type="number" name="NIK" placeholder="NIK" id="nik">
+        <input class="input" type="text" name="Nama Lengkap" placeholder="Nama lengkap" id="nama_lengkap">
+
+        <div class="group-button">
+            <a class="button" onclick="handleSubmit(event, 'daftar')">saya pengguna baru</a>
+            <button class="button" onclick="handleSubmit(event, 'masuk')">masuk</button>
+        </div>
+     </form>
+        
+    </div>
+
+    <Script>
+        function checkLogin() {
+            if (localStorage.getItem("isioggedin") !== null) {
+                window.location.replace("/dashboard.html")
+            }
+        }
+        
+
+       async function handleSubmit(event, aksi) {
+            event.preventDefault();
+            console.log(aksi);
+
+            const nik = document.getElementById("nik").value;
+
+            const nama_lengkap = document.getElementById("nama_lengkap").value;
+
+            //logicuntuk cek jik data kosong
+            if( !nik || !nama_lengkap) {
+                return alert ("Form tidak boleh kosong!");
+            }
+            // 3 x login
+
+            //handle login
+
+            //POST// -> FORMDATA
+            let formData = new ormData();
+            formData.append('nik', nik);
+            formData.append('nama_lengkap', nama_lengkap);
+
+
+            if (aksi === 'daftar') {
+                formData.append("aksi", "daftar");
+
+            } else {
+                formData.append("aksi", "login");
+
+            }
+            
+            // console.log(formData);
+            let object = {};
+            formData.forEach((value, key) => (object[key] = value) )
+            let json = JSON.stringify(object);
+            console.log(json);
+
+            if (aksi === 'daftar') {
+                //panggil api daftar
+                try {
+                    //panggil api
+                    const response = await fetch('http://localhost', {
+                        method: "POST",
+                        headers: {
+                            'content-Type': "application"
+                        },
+                        body: json,
+                    });
+                    let data = await response.json();
+                    console.log(data);
+                    if(data.status == "Berhasil Mendaftar") {
+                        alert("Berhasil Mendaftar");
+                        localStorage.setItem("isioggedin", data.nik);
+                        localStorage.setItem("isiNamaLengkap", nama_lengkap);
+                        window.location.replace("/dasboard.html")
+                    } else {
+                        alert("Nik Sudah Terdaftar");
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }else{
+                //panggil api login
+
+                try {
+                    const response = await fetch('http://localhost',) {
+                        : "POST",method
+                        headers: {
+                            "Content-Type": 'application/json',
+                        },
+                        body: json,
+                    }
+                    let data = await response.json();
+                    console.log(data);
+                        
+
+                            
+                } catch (error) {
+                    console.log(error);  
+                }
+            } 
+            // if ()
+            //     //panggil api daftar
+            // } else {
+            //     //panggil api login
+            // }
+            // if (nik === "123" && nama_lengkap === "egi") {
+            //  // alert("Login Berhasil");
+            //  localStorage.setItem("isioggedin", "admin");
+            // window.location.replace("/dashboard.html");
+            // }else {
+            //     alert("Username atau Password Salah");
+            // }
+            //console.log("javascript terload" , event);
+        }
+    </Script>
+    
+</body>
+</html>
